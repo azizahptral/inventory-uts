@@ -1,59 +1,179 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Inventory UTS — Sistem Inventaris dan Penjualan
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi web berbasis Laravel untuk membantu pencatatan produk, supplier, stok masuk/pembelian, pembayaran supplier, dan penjualan. Project ini dibuat untuk memenuhi tugas UTS Integrated Laravel Project.
 
-## About Laravel
+## Fitur
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Login dan logout.
+- Pembagian akses berdasarkan role `admin` dan `staff`.
+- Dashboard ringkasan inventaris dan transaksi.
+- Pengelolaan produk: tambah, lihat, ubah, hapus, pencarian, dan pagination.
+- Pengelolaan supplier.
+- Pencatatan pembelian/stok masuk beserta item pembelian.
+- Pencatatan pembayaran untuk tagihan pembelian supplier.
+- Pencatatan penjualan beserta item penjualan.
+- Validasi input pada form dan pemeriksaan stok saat penjualan.
+- Perlindungan agar produk yang telah digunakan dalam transaksi tidak dihapus begitu saja.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+> Catatan: modul kategori sengaja tidak disertakan dalam versi project ini.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Teknologi
 
-## Learning Laravel
+- PHP 8.2 atau lebih baru yang kompatibel dengan project
+- Laravel 12
+- MySQL/MariaDB
+- Composer
+- Node.js dan npm
+- Blade, CSS, dan JavaScript
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Persyaratan
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Pastikan perangkat sudah memiliki:
+- PHP 8.2+
+- Composer
+- MySQL atau MariaDB (misalnya melalui XAMPP)
+- Node.js dan npm
 
-## Laravel Sponsors
+Ekstensi PHP yang diperlukan mengikuti kebutuhan Laravel 12, termasuk `OpenSSL`, `PDO`, `Mbstring`, `Tokenizer`, `XML`, `Ctype`, `JSON`, dan `cURL`.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Instalasi Lokal
 
-### Premium Partners
+### 1. Clone repository
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+git clone <URL_REPOSITORY_GITHUB>
+cd inventory-uts
+```
 
-## Contributing
+Jika project sudah berada di komputer, buka folder project tersebut di terminal.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 2. Pasang dependency PHP
 
-## Code of Conduct
+```bash
+composer install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 3. Buat file environment
 
-## Security Vulnerabilities
+Di Windows Command Prompt:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bat
+copy .env.example .env
+```
 
-## License
+Di PowerShell:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```powershell
+Copy-Item .env.example .env
+```
+
+Jika file `.env` sudah ada, jangan menimpanya.
+
+### 4. Atur database
+
+Buat database baru melalui phpMyAdmin, misalnya bernama `inventory_uts`.
+
+Buka `.env` dan sesuaikan konfigurasi database lokal:
+
+```dotenv
+APP_NAME="Inventory UTS"
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://127.0.0.1:8000
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=inventory_uts
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Nilai di atas merupakan contoh konfigurasi XAMPP lokal. Sesuaikan dengan konfigurasi MySQL di perangkat masing-masing. Jangan unggah file `.env` ke GitHub.
+
+### 5. Buat application key
+
+```bash
+php artisan key:generate
+```
+
+### 6. Jalankan migration dan seeder
+
+```bash
+php artisan migrate --seed
+```
+
+Perintah ini membuat tabel database dan menjalankan seeder yang tersedia. Jalankan pada database pengembangan yang baru atau yang memang disiapkan untuk instalasi. Jangan gunakan `migrate:fresh` pada database yang berisi data penting karena perintah itu menghapus tabel.
+
+**Akun pengguna:** seeder bawaan saat ini membuat pengguna contoh `test@example.com`. Periksa `database/seeders/DatabaseSeeder.php` dan `database/factories/UserFactory.php` untuk mengetahui konfigurasi pengguna contoh. Untuk penggunaan admin/staff, pastikan akun dan nilai `role` disiapkan sesuai kebutuhan project. Jangan mengandalkan akun contoh sebagai akun produksi.
+
+### 7. Pasang dependency frontend dan build asset
+
+```bash
+npm install
+npm run build
+```
+
+### 8. Jalankan aplikasi
+
+```bash
+php artisan serve
+```
+
+Buka alamat berikut di browser:
+
+http://127.0.0.1:8000
+
+Jika PHP belum terdaftar di PATH pada Windows XAMPP, jalankan Artisan menggunakan path PHP XAMPP, misalnya:
+
+```powershell
+C:\xampp\php\php.exe artisan serve
+```
+
+## Struktur Folder Penting
+
+```text
+app/
+  Http/Controllers/   # Logika request aplikasi
+  Http/Middleware/    # Middleware akses berdasarkan role
+  Models/             # Model Eloquent
+database/
+  migrations/         # Struktur tabel
+  seeders/            # Data awal
+resources/views/      # Tampilan Blade
+routes/web.php        # Route aplikasi
+public/               # Entry point dan asset publik
+```
+
+## Pengujian
+
+Jalankan test Laravel dengan:
+
+```bash
+php artisan test
+```
+
+Lakukan juga pemeriksaan manual untuk:
+- Login dengan akun yang valid dan tidak valid.
+- Akses halaman sesuai role admin/staff.
+- Validasi SKU unik dan nilai input.
+- Pembelian yang menambah stok.
+- Penjualan yang mengurangi stok.
+- Penjualan ketika stok tidak mencukupi.
+- Pembayaran supplier dan perhitungan sisa tagihan.
+- Pencarian, pagination, dan tampilan detail transaksi.
+
+Hasil pengujian perlu dicatat dan dilengkapi screenshot sebagai bukti pengujian project.
+
+## Keamanan dan Catatan
+
+- File `.env`, password, token, dan kredensial pribadi tidak boleh diunggah ke repository.
+- Folder `vendor/` dan `node_modules/` tidak perlu di-commit; dependency dapat dipasang kembali menggunakan Composer dan npm.
+- Jangan gunakan data pelanggan atau data pribadi sungguhan untuk demo.
+- Project ini ditujukan untuk pembelajaran dan demonstrasi lokal; lakukan pengujian keamanan dan konfigurasi tambahan sebelum digunakan di lingkungan produksi.
+
+## Pengembang
+
+Project UTS — Integrated Laravel Project.
+
+Tambahkan nama pengembang, kelas, dan informasi mata kuliah di sini jika diperlukan oleh ketentuan pengumpulan.
