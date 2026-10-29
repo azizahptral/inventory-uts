@@ -25,14 +25,14 @@
         padding: 11px 16px;
         border: none;
         border-radius: 8px;
-        background: #0d9488;
+        background: #3d6f46;
         color: white;
         text-decoration: none;
         cursor: pointer;
         font-size: 14px;
         white-space: nowrap;
     }
-    .sales-btn:hover { background: #0f766e; }
+    .sales-btn:hover { background: #315a39; }
     .sales-card {
         background: white;
         border: 1px solid #e2e8f0;

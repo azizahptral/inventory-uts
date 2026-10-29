@@ -1,40 +1,36 @@
 <?php
 
-namespace App\Models;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
-class PurchasePayment extends Model
+return new class extends Migration
 {
-    use HasFactory;
-
-    protected $fillable = [
-        'purchase_id',
-        'user_id',
-        'payment_date',
-        'amount',
-        'payment_method',
-        'reference_number',
-        'notes',
-    ];
-
-    protected function casts(): array
+    public function up(): void
     {
-        return [
-            'payment_date' => 'date',
-            'amount' => 'decimal:2',
-        ];
+        Schema::create('purchase_payments', function (Blueprint $table) {
+            $table->id();
+
+            $table->foreignId('purchase_id')
+                ->constrained('purchases')
+                ->cascadeOnDelete();
+
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
+
+            $table->date('payment_date');
+            $table->decimal('amount', 14, 2);
+            $table->string('payment_method')->default('cash');
+            $table->string('reference_number')->nullable();
+            $table->text('notes')->nullable();
+            $table->timestamps();
+        });
     }
 
-    public function purchase(): BelongsTo
+    public function down(): void
     {
-        return $this->belongsTo(Purchase::class);
+        Schema::dropIfExists('purchase_payments');
     }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-}
+};

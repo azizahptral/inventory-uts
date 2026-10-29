@@ -18,10 +18,10 @@
     .detail-btn {
         display: inline-flex; align-items: center; justify-content: center;
         border: 0; border-radius: 8px; padding: 11px 16px;
-        background: #0d9488; color: white; text-decoration: none;
+        background: #3d6f46; color: white; text-decoration: none;
         cursor: pointer; font-size: 14px;
     }
-    .detail-btn:hover { background: #0f766e; }
+    .detail-btn:hover { background: #315a39; }
     .detail-btn-light { background: #e8eef5; color: #334155; }
     .detail-btn-light:hover { background: #dbe4ee; }
     .detail-card {
@@ -61,7 +61,7 @@
     }
     .detail-grand {
         border-top: 1px solid #e2e8f0; margin-top: 5px; padding-top: 17px;
-        font-size: 21px; font-weight: 700; color: #0f766e;
+        font-size: 21px; font-weight: 700; color: #315a39;
     }
     .detail-footer {
         text-align: center; padding: 20px 0 5px;

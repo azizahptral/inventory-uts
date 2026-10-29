@@ -8,6 +8,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PurchasePaymentController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\FinancialReportController;
 
 // LOGIN
 Route::middleware('guest')->group(function () {
@@ -124,6 +125,17 @@ Route::middleware('auth')->group(function () {
             PurchaseController::class,
             'destroy'
         ])->name('purchases.destroy');
+
+        // ADMIN SAJA: LAPORAN KEUANGAN & CETAK
+        Route::get('/financial-reports', [
+            FinancialReportController::class,
+            'index'
+        ])->name('financial-reports.index');
+
+        Route::get('/financial-reports/print', [
+            FinancialReportController::class,
+            'print'
+        ])->name('financial-reports.print');
     });
 
     // LOGOUT

@@ -23,7 +23,7 @@
         font: inherit; background: #fff;
     }
     .sale-field input:focus, .sale-input:focus {
-        outline: 2px solid #99f6e4; border-color: #0d9488;
+        outline: 2px solid #c2dec6; border-color: #3d6f46;
     }
     .sale-table-wrap { overflow-x: auto; }
     .sale-table { width: 100%; border-collapse: collapse; min-width: 700px; }
@@ -40,10 +40,10 @@
     .sale-btn {
         display: inline-flex; align-items: center; justify-content: center;
         gap: 7px; padding: 11px 16px; border: 0; border-radius: 8px;
-        background: #0d9488; color: white; text-decoration: none;
+        background: #3d6f46; color: white; text-decoration: none;
         font-size: 14px; cursor: pointer;
     }
-    .sale-btn:hover { background: #0f766e; }
+    .sale-btn:hover { background: #315a39; }
     .sale-btn-light { background: #e8eef5; color: #334155; }
     .sale-btn-light:hover { background: #dbe4ee; }
     .sale-btn-danger { background: #fff1f2; color: #be123c; padding: 9px 12px; }
@@ -57,14 +57,14 @@
     }
     .sale-grand-total {
         padding-top: 15px; border-top: 1px solid #e2e8f0;
-        font-size: 22px; font-weight: 700; color: #0f766e;
+        font-size: 22px; font-weight: 700; color: #315a39;
     }
     .sale-payment-grid {
         display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
     }
     .sale-change {
         padding: 14px; border-radius: 9px; background: #f0fdfa;
-        color: #0f766e; font-size: 22px; font-weight: 700;
+        color: #315a39; font-size: 22px; font-weight: 700;
     }
     .sale-actions { display: flex; justify-content: flex-end; gap: 10px; }
     .sale-error {

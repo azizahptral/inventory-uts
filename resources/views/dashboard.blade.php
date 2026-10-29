@@ -1,4 +1,3 @@
-
 @extends('layout.app')
 
 @section('title', 'Dashboard - Diesel Parts')
@@ -9,23 +8,40 @@
     .dashboard-page { max-width: 1250px; margin: 0 auto; }
 
     .welcome-card {
-        background: linear-gradient(135deg, #142238, #24506a);
+        background: linear-gradient(135deg, #162c1b 0%, #294e32 60%, #3e6d47 100%);
         color: white;
-        padding: 30px;
-        border-radius: 15px;
+        padding: 32px 36px;
+        border-radius: var(--radius-lg);
         margin-bottom: 25px;
+        box-shadow: 0 8px 24px rgba(22, 44, 27, 0.15);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .welcome-card::after {
+        content: "🌿";
+        position: absolute;
+        right: 25px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 80px;
+        opacity: 0.12;
+        pointer-events: none;
     }
 
     .welcome-card h1 {
         margin: 0 0 10px;
         font-size: 27px;
+        font-weight: 800;
+        letter-spacing: -0.4px;
     }
 
     .welcome-card p {
         margin: 0;
-        color: #d4e2ee;
+        color: #d8eadc;
         font-size: 14px;
         line-height: 1.7;
+        max-width: 720px;
     }
 
     .dashboard-stats {
@@ -38,10 +54,16 @@
     .dashboard-stat {
         background: white;
         padding: 22px;
-        border-radius: 13px;
-        border: 1px solid #e5eaf1;
-        box-shadow: 0 3px 12px rgba(15,23,42,.035);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-sm);
         min-width: 0;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .dashboard-stat:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
     }
 
     .stat-top {
@@ -53,8 +75,9 @@
     }
 
     .stat-label {
-        color: #64748b;
+        color: var(--text-secondary);
         font-size: 13px;
+        font-weight: 600;
     }
 
     .stat-icon {
@@ -64,20 +87,22 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #e0f2fe;
+        background: var(--matcha-primary-light);
+        color: var(--matcha-primary-dark);
         font-size: 19px;
     }
 
     .stat-number {
         font-size: 27px;
-        font-weight: 700;
-        color: #142238;
+        font-weight: 800;
+        color: var(--text-main);
         overflow-wrap: anywhere;
+        letter-spacing: -0.5px;
     }
 
     .stat-description {
         font-size: 12px;
-        color: #94a3b8;
+        color: var(--text-muted);
         margin-top: 7px;
     }
 
@@ -90,10 +115,10 @@
 
     .dashboard-card {
         background: white;
-        border: 1px solid #e5eaf1;
-        border-radius: 13px;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
         padding: 23px;
-        box-shadow: 0 3px 12px rgba(15,23,42,.035);
+        box-shadow: var(--shadow-sm);
         min-width: 0;
     }
 
@@ -107,26 +132,36 @@
 
     .dashboard-card-heading h2 {
         font-size: 17px;
+        font-weight: 700;
+        color: var(--text-main);
         margin: 0 0 7px;
     }
 
     .dashboard-muted {
-        color: #64748b;
-        font-size: 12px;
+        color: var(--text-secondary);
+        font-size: 12.5px;
         line-height: 1.6;
     }
 
     .dashboard-link {
-        color: #0d9488;
+        color: var(--matcha-primary);
         text-decoration: none;
         font-size: 13px;
-        font-weight: 600;
+        font-weight: 700;
         white-space: nowrap;
+        transition: color 0.2s;
     }
 
-    .dashboard-link:hover { text-decoration: underline; }
+    .dashboard-link:hover {
+        color: var(--matcha-primary-hover);
+        text-decoration: underline;
+    }
 
-    .dashboard-table-wrap { overflow-x: auto; }
+    .dashboard-table-wrap {
+        overflow-x: auto;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border-light);
+    }
 
     .dashboard-table {
         width: 100%;
@@ -136,17 +171,19 @@
 
     .dashboard-table th {
         text-align: left;
-        padding: 12px 10px;
-        color: #64748b;
-        background: #f8fafc;
-        font-size: 11px;
+        padding: 12px 14px;
+        color: #3b5a41;
+        background: #f3f7f4;
+        font-size: 11.5px;
+        font-weight: 700;
         text-transform: uppercase;
         white-space: nowrap;
+        border-bottom: 1px solid var(--border-color);
     }
 
     .dashboard-table td {
-        padding: 14px 10px;
-        border-bottom: 1px solid #edf1f6;
+        padding: 14px 14px;
+        border-bottom: 1px solid var(--border-light);
         font-size: 13px;
         vertical-align: middle;
     }
@@ -157,7 +194,7 @@
 
     .product-name {
         font-weight: 600;
-        color: #1e293b;
+        color: var(--text-main);
     }
 
     .stock-badge {
@@ -165,7 +202,7 @@
         background: #fee2e2;
         color: #991b1b;
         border-radius: 20px;
-        padding: 5px 9px;
+        padding: 4px 10px;
         font-size: 11px;
         font-weight: 700;
         white-space: nowrap;
@@ -173,32 +210,35 @@
 
     .status-badge {
         display: inline-block;
-        background: #dcfce7;
+        background: #e6f6eb;
         color: #166534;
         border-radius: 20px;
-        padding: 5px 9px;
+        padding: 4px 10px;
         font-size: 11px;
-        font-weight: 600;
+        font-weight: 700;
     }
 
     .dashboard-empty {
-        padding: 25px 10px;
+        padding: 30px 10px;
         text-align: center;
-        color: #64748b;
+        color: var(--text-muted);
         font-size: 13px;
         line-height: 1.8;
     }
 
     .dashboard-bottom {
-        margin-top: 20px;
+        margin-top: 24px;
         background: white;
-        border: 1px solid #e5eaf1;
-        border-radius: 13px;
-        padding: 22px;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        box-shadow: var(--shadow-sm);
     }
 
     .dashboard-bottom h2 {
-        font-size: 17px;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-main);
         margin: 0 0 7px;
     }
 
@@ -213,23 +253,44 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 11px 15px;
-        border-radius: 8px;
-        background: #0d9488;
+        padding: 11px 18px;
+        border-radius: var(--radius-md);
+        background: var(--matcha-primary);
         color: white;
         text-decoration: none;
-        font-size: 13px;
+        font-size: 13.5px;
         font-weight: 600;
+        transition: all 0.2s;
+        box-shadow: 0 2px 6px rgba(61, 111, 70, 0.2);
     }
 
-    .quick-action:hover { background: #0f766e; }
+    .quick-action:hover {
+        background: var(--matcha-primary-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(61, 111, 70, 0.25);
+    }
 
     .quick-action.secondary {
-        background: #e8eef5;
-        color: #334155;
+        background: #edf3ee;
+        color: var(--matcha-primary-dark);
+        border: 1px solid var(--border-color);
+        box-shadow: none;
     }
 
-    .quick-action.secondary:hover { background: #dbe4ee; }
+    .quick-action.secondary:hover {
+        background: #e0ece1;
+        color: #142a18;
+    }
+
+    .quick-action.admin-action {
+        background: #234328;
+        color: #ffffff;
+        border: 1px solid #37653e;
+    }
+
+    .quick-action.admin-action:hover {
+        background: #19331e;
+    }
 
     @media (max-width: 1000px) {
         .dashboard-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -427,6 +488,12 @@
             <a href="{{ route('sales.create') }}" class="quick-action">
                 + Transaksi Penjualan
             </a>
+
+            @if (auth()->check() && auth()->user()->role === 'admin')
+                <a href="{{ route('financial-reports.index') }}" class="quick-action admin-action">
+                    📈 Laporan Keuangan (Admin)
+                </a>
+            @endif
         </div>
     </section>
 

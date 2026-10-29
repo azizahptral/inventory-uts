@@ -41,7 +41,7 @@
     }
 
     .product-btn-primary {
-        background: #109688;
+        background: #3d6f46;
         color: white;
     }
 
@@ -213,7 +213,7 @@
     }
 
     .product-section-title {
-        color: #109688;
+        color: #3d6f46;
         font-size: 13px;
         font-weight: 700;
         letter-spacing: 1px;
@@ -261,8 +261,8 @@
     .product-form-group input:focus,
     .product-form-group select:focus,
     .product-form-group textarea:focus {
-        border-color: #109688;
-        box-shadow: 0 0 0 3px rgba(16, 150, 136, .12);
+        border-color: #3d6f46;
+        box-shadow: 0 0 0 3px rgba(61, 111, 70, .15);
     }
 
     .product-form-group textarea {
