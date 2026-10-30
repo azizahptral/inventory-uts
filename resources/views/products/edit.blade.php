@@ -103,6 +103,7 @@
         font-weight: 600;
     }
 
+    .category-badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11.5px; font-weight: 700; background: #eaf3ed; color: #244b2a; border: 1px solid #cce2d1; white-space: nowrap; }
     .stock-badge-low {
         background: #fee2e2;
         color: #b91c1c;
@@ -315,6 +316,98 @@
             width: 100%;
         }
     }
+
+    .delete-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 2000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(15, 23, 42, .55);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity .2s ease, visibility .2s ease;
+    }
+
+    .delete-modal-backdrop.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .delete-modal {
+        width: 100%;
+        max-width: 420px;
+        padding: 28px;
+        border-radius: 18px;
+        background: #fff;
+        text-align: center;
+        box-shadow: 0 24px 70px rgba(15, 23, 42, .25);
+        transform: translateY(10px) scale(.98);
+        transition: transform .2s ease;
+    }
+
+    .delete-modal-backdrop.active .delete-modal {
+        transform: translateY(0) scale(1);
+    }
+
+    .delete-modal-icon {
+        width: 58px;
+        height: 58px;
+        margin: 0 auto 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .delete-modal h2 {
+        margin: 0 0 10px;
+        color: #1d2939;
+        font-size: 22px;
+    }
+
+    .delete-modal p {
+        margin: 0;
+        color: #667085;
+        font-size: 14px;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
+    }
+
+    .delete-modal-actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 24px;
+    }
+
+    .delete-confirm-button {
+        background: #dc2626;
+        color: #fff;
+    }
+
+    .delete-confirm-button:hover {
+        background: #b91c1c;
+    }
+
+    @media (max-width: 420px) {
+        .delete-modal {
+            padding: 22px;
+        }
+
+        .delete-modal-actions {
+            flex-direction: column-reverse;
+        }
+
+        .delete-modal-actions button {
+            width: 100%;
+        }
+    }
+
 </style>
 
 @if (session('success'))
@@ -363,11 +456,13 @@
             @endif
         </form>
 
-        <button type="button"
-                class="product-btn product-btn-primary"
-                onclick="openProductDrawer()">
-            + Tambah Produk
-        </button>
+        @if (auth()->user()->role === 'admin')
+            <button type="button"
+                    class="product-btn product-btn-primary"
+                    onclick="openProductDrawer()">
+                + Tambah Produk
+            </button>
+        @endif
     </div>
 
     <div class="product-table-wrapper">
@@ -377,11 +472,14 @@
                     <th>No.</th>
                     <th>Kode Produk</th>
                     <th>Nama Produk</th>
+                    <th>Kategori</th>
                     <th>Supplier</th>
                     <th>Harga Beli</th>
                     <th>Harga Jual</th>
                     <th>Stok</th>
-                    <th>Aksi</th>
+                    @if (auth()->user()->role === 'admin')
+                        <th>Aksi</th>
+                    @endif
                 </tr>
             </thead>
 
@@ -399,6 +497,16 @@
                                 <small class="product-muted">
                                     {{ $product->description }}
                                 </small>
+                            @endif
+                        </td>
+
+                        <td>
+                            @if ($product->category)
+                                <a href="{{ route('categories.show', $product->category) }}" style="text-decoration: none;">
+                                    <span class="category-badge">🏷️ {{ $product->category->name }}</span>
+                                </a>
+                            @else
+                                <span class="product-muted">-</span>
                             @endif
                         </td>
 
@@ -424,29 +532,32 @@
                             @endif
                         </td>
 
-                        <td>
-                            <div class="product-actions">
-                                <button
-                                    type="button"
-                                    class="product-btn product-btn-secondary"
-                                    onclick="editProduct({{ $product->id }})">
-                                    Edit
-                                </button>
-
-                                <form
-                                    action="{{ route('products.destroy', $product) }}"
-                                    method="POST"
-                                    onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
-                                    @csrf
-                                    @method('DELETE')
-
-                                    <button type="submit"
-                                            class="product-btn product-btn-danger">
-                                        Hapus
+                        @if (auth()->user()->role === 'admin')
+                            <td>
+                                <div class="product-actions">
+                                    <button
+                                        type="button"
+                                        class="product-btn product-btn-secondary"
+                                        onclick="editProduct({{ $product->id }})">
+                                        Edit
                                     </button>
-                                </form>
-                            </div>
-                        </td>
+
+                                    <form
+                                        action="{{ route('products.destroy', $product) }}"
+                                        method="POST"
+                                        class="delete-product-form"
+                                        data-product-name="{{ $product->name }}">
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button type="submit"
+                                                class="product-btn product-btn-danger">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        @endif
                     </tr>
                 @empty
                     <tr>
@@ -464,6 +575,7 @@
     </div>
 </div>
 
+@if (auth()->user()->role === 'admin')
 <div class="product-drawer-backdrop"
      id="productDrawerBackdrop"
      onclick="closeProductDrawer()"></div>
@@ -553,6 +665,34 @@
                     </small>
 
                     @error('supplier_name')
+                        <div class="product-field-error">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="product-form-group full-width">
+                    <label for="category_name">Kategori Produk</label>
+
+                    <input
+                        type="text"
+                        id="category_name"
+                        name="category_name"
+                        value="{{ old('category_name') }}"
+                        placeholder="Pilih atau ketik kategori produk..."
+                        list="categorySuggestions"
+                        autocomplete="off"
+                    >
+
+                    <datalist id="categorySuggestions">
+                        @foreach ($categories as $cat)
+                            <option value="{{ $cat->name }}"></option>
+                        @endforeach
+                    </datalist>
+
+                    <small class="product-muted">
+                        Pilih dari daftar atau ketik kategori baru. Jika belum ada, kategori otomatis tersimpan di menu Kategori.
+                    </small>
+
+                    @error('category_name')
                         <div class="product-field-error">{{ $message }}</div>
                     @enderror
                 </div>
@@ -669,7 +809,29 @@
     </form>
 </aside>
 
+
+<div class="delete-modal-backdrop" id="deleteModalBackdrop" aria-hidden="true">
+    <section class="delete-modal" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle" aria-describedby="deleteModalMessage">
+        <div class="delete-modal-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18"></path>
+                <path d="M8 6V4h8v2"></path>
+                <path d="m19 6-1 14H6L5 6"></path>
+                <path d="M10 11v5M14 11v5"></path>
+            </svg>
+        </div>
+        <h2 id="deleteModalTitle">Hapus Produk?</h2>
+        <p id="deleteModalMessage">Apakah kamu yakin ingin menghapus produk ini? Tindakan ini tidak dapat dibatalkan.</p>
+        <div class="delete-modal-actions">
+            <button type="button" class="product-btn product-btn-secondary" id="cancelDeleteButton">Batal</button>
+            <button type="button" class="product-btn product-btn-danger delete-confirm-button" id="confirmDeleteButton">Ya, Hapus</button>
+        </div>
+    </section>
+</div>
+@endif
+
 <script>
+    @if (auth()->user()->role === 'admin')
     const productDrawer = document.getElementById('productDrawer');
     const productBackdrop = document.getElementById('productDrawerBackdrop');
     const productForm = document.getElementById('productForm');
@@ -678,6 +840,57 @@
     const productSubmitButton = document.getElementById('productSubmitButton');
 
     const productBaseUrl = @json(url('/products'));
+
+    const deleteModalBackdrop = document.getElementById('deleteModalBackdrop');
+    const deleteModalMessage = document.getElementById('deleteModalMessage');
+    const cancelDeleteButton = document.getElementById('cancelDeleteButton');
+    const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+    let pendingDeleteForm = null;
+
+    function openDeleteModal(form) {
+        pendingDeleteForm = form;
+        const productName = form.dataset.productName || 'produk ini';
+        deleteModalMessage.textContent = 'Kamu yakin ingin menghapus "' + productName + '"? Tindakan ini tidak dapat dibatalkan.';
+        deleteModalBackdrop.classList.add('active');
+        deleteModalBackdrop.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        cancelDeleteButton.focus();
+    }
+
+    function closeDeleteModal() {
+        deleteModalBackdrop.classList.remove('active');
+        deleteModalBackdrop.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        pendingDeleteForm = null;
+        confirmDeleteButton.disabled = false;
+        confirmDeleteButton.textContent = 'Ya, Hapus';
+    }
+
+    document.querySelectorAll('.delete-product-form').forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            openDeleteModal(form);
+        });
+    });
+
+    cancelDeleteButton.addEventListener('click', closeDeleteModal);
+
+    deleteModalBackdrop.addEventListener('click', function (event) {
+        if (event.target === deleteModalBackdrop) {
+            closeDeleteModal();
+        }
+    });
+
+    confirmDeleteButton.addEventListener('click', function () {
+        if (pendingDeleteForm) {
+            confirmDeleteButton.disabled = true;
+            confirmDeleteButton.textContent = 'Menghapus...';
+            pendingDeleteForm.submit();
+        }
+    });
+
+
+    @endif
 
     // Hilangkan notifikasi setelah 3 detik
     document.querySelectorAll('.auto-dismiss-alert').forEach(function (alert) {
@@ -692,6 +905,7 @@
         }, 3000);
     });
 
+    @if (auth()->user()->role === 'admin')
     function openProductDrawer() {
         productDrawer.classList.add('active');
         productBackdrop.classList.add('active');
@@ -713,56 +927,74 @@
 
         productForm.reset();
 
+        document.getElementById('category_name').value = '';
         document.getElementById('purchase_price').value = 0;
         document.getElementById('selling_price').value = 0;
         document.getElementById('stock').value = 0;
         document.getElementById('min_stock').value = 5;
     }
 
-    async function editProduct(id) {
-        try {
-            const response = await fetch(productBaseUrl + '/' + id + '/edit', {
+    
+async function editProduct(id) {
+    try {
+        const response = await fetch(
+            `${productBaseUrl}/${id}/edit`,
+            {
+                method: 'GET',
                 headers: {
                     'Accept': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                 }
-            });
-
-            if (!response.ok) {
-                throw new Error('Gagal mengambil data produk. Coba refresh halaman.');
             }
+        );
 
-            const product = await response.json();
-
-            productForm.action = productBaseUrl + '/' + product.id;
-            productMethodField.innerHTML = '<input type="hidden" name="_method" value="PUT">';
-
-            productFormTitle.textContent = 'Edit Produk';
-            productSubmitButton.textContent = 'Simpan Perubahan';
-
-            document.getElementById('sku').value = product.sku ?? '';
-            document.getElementById('name').value = product.name ?? '';
-            document.getElementById('supplier_name').value = product.supplier?.name ?? '';
-            document.getElementById('purchase_price').value = product.purchase_price ?? 0;
-            document.getElementById('selling_price').value = product.selling_price ?? 0;
-            document.getElementById('stock').value = product.stock ?? 0;
-            document.getElementById('min_stock').value = product.min_stock ?? 5;
-            document.getElementById('description').value = product.description ?? '';
-
-            openProductDrawer();
-        } catch (error) {
-            alert(error.message || 'Terjadi kesalahan saat membuka data produk.');
+        if (!response.ok) {
+            throw new Error('Gagal mengambil data produk.');
         }
+
+        const product = await response.json();
+
+        productForm.action = `${productBaseUrl}/${product.id}`;
+
+        productMethodField.innerHTML =
+            '<input type="hidden" name="_method" value="PUT">';
+
+        productFormTitle.textContent = 'Edit Produk';
+        productSubmitButton.textContent = 'Simpan Perubahan';
+
+        document.getElementById('sku').value = product.sku ?? '';
+        document.getElementById('name').value = product.name ?? '';
+        document.getElementById('supplier_name').value =
+            product.supplier?.name ?? '';
+        document.getElementById('category_name').value =
+            product.category?.name ?? '';
+        document.getElementById('purchase_price').value =
+            product.purchase_price ?? 0;
+        document.getElementById('selling_price').value =
+            product.selling_price ?? 0;
+        document.getElementById('stock').value = product.stock ?? 0;
+        document.getElementById('min_stock').value =
+            product.min_stock ?? 5;
+        document.getElementById('description').value =
+            product.description ?? '';
+
+        openProductDrawer();
+    } catch (error) {
+        alert(error.message || 'Gagal membuka data produk.');
     }
+}
+
 
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {
             closeProductDrawer();
+            closeDeleteModal();
         }
     });
 
     @if ($errors->any())
         openProductDrawer();
+    @endif
     @endif
 </script>
 @endsection

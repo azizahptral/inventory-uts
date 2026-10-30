@@ -103,6 +103,7 @@
         font-weight: 600;
     }
 
+    .category-badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11.5px; font-weight: 700; background: #eaf3ed; color: #244b2a; border: 1px solid #cce2d1; white-space: nowrap; }
     .stock-badge-low {
         background: #fee2e2;
         color: #b91c1c;
@@ -471,6 +472,7 @@
                     <th>No.</th>
                     <th>Kode Produk</th>
                     <th>Nama Produk</th>
+                    <th>Kategori</th>
                     <th>Supplier</th>
                     <th>Harga Beli</th>
                     <th>Harga Jual</th>
@@ -495,6 +497,16 @@
                                 <small class="product-muted">
                                     {{ $product->description }}
                                 </small>
+                            @endif
+                        </td>
+
+                        <td>
+                            @if ($product->category)
+                                <a href="{{ route('categories.show', $product->category) }}" style="text-decoration: none;">
+                                    <span class="category-badge">🏷️ {{ $product->category->name }}</span>
+                                </a>
+                            @else
+                                <span class="product-muted">-</span>
                             @endif
                         </td>
 
@@ -653,6 +665,34 @@
                     </small>
 
                     @error('supplier_name')
+                        <div class="product-field-error">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="product-form-group full-width">
+                    <label for="category_name">Kategori Produk</label>
+
+                    <input
+                        type="text"
+                        id="category_name"
+                        name="category_name"
+                        value="{{ old('category_name') }}"
+                        placeholder="Pilih atau ketik kategori produk..."
+                        list="categorySuggestions"
+                        autocomplete="off"
+                    >
+
+                    <datalist id="categorySuggestions">
+                        @foreach ($categories as $cat)
+                            <option value="{{ $cat->name }}"></option>
+                        @endforeach
+                    </datalist>
+
+                    <small class="product-muted">
+                        Pilih dari daftar atau ketik kategori baru. Jika belum ada, kategori otomatis tersimpan di menu Kategori.
+                    </small>
+
+                    @error('category_name')
                         <div class="product-field-error">{{ $message }}</div>
                     @enderror
                 </div>
@@ -887,6 +927,7 @@
 
         productForm.reset();
 
+        document.getElementById('category_name').value = '';
         document.getElementById('purchase_price').value = 0;
         document.getElementById('selling_price').value = 0;
         document.getElementById('stock').value = 0;
@@ -925,6 +966,8 @@ async function editProduct(id) {
         document.getElementById('name').value = product.name ?? '';
         document.getElementById('supplier_name').value =
             product.supplier?.name ?? '';
+        document.getElementById('category_name').value =
+            product.category?.name ?? '';
         document.getElementById('purchase_price').value =
             product.purchase_price ?? 0;
         document.getElementById('selling_price').value =

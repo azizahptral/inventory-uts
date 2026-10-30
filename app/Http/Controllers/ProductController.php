@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
@@ -15,24 +16,37 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $categoryId = $request->input('category_id');
 
-        $products = Product::with('supplier')
+        $products = Product::with(['supplier', 'category'])
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
-                        ->orWhere('sku', 'like', "%{$search}%");
+                        ->orWhere('sku', 'like', "%{$search}%")
+                        ->orWhereHas('category', function ($catQ) use ($search) {
+                            $catQ->where('name', 'like', "%{$search}%");
+                        })
+                        ->orWhereHas('supplier', function ($supQ) use ($search) {
+                            $supQ->where('name', 'like', "%{$search}%");
+                        });
                 });
+            })
+            ->when($categoryId, function ($query, $categoryId) {
+                $query->where('category_id', $categoryId);
             })
             ->latest()
             ->paginate(10)
             ->withQueryString();
 
         $suppliers = Supplier::orderBy('name')->get();
+        $categories = Category::orderBy('name')->get();
 
         return view('products.index', compact(
             'products',
             'suppliers',
-            'search'
+            'categories',
+            'search',
+            'categoryId'
         ));
     }
 
@@ -42,8 +56,9 @@ class ProductController extends Controller
     public function create()
     {
         $suppliers = Supplier::orderBy('name')->get();
+        $categories = Category::orderBy('name')->get();
 
-        return view('products.create', compact('suppliers'));
+        return view('products.create', compact('suppliers', 'categories'));
     }
 
     /**
@@ -53,6 +68,7 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'supplier_name' => ['nullable', 'string', 'max:255'],
+            'category_name' => ['nullable', 'string', 'max:255'],
             'sku' => [
                 'required',
                 'string',
@@ -69,7 +85,6 @@ class ProductController extends Controller
 
         $supplierName = trim($validated['supplier_name'] ?? '');
         unset($validated['supplier_name']);
-
         $validated['supplier_id'] = null;
 
         if ($supplierName !== '') {
@@ -78,6 +93,19 @@ class ProductController extends Controller
             ]);
 
             $validated['supplier_id'] = $supplier->id;
+        }
+
+        // Kategori otomatis terhubung atau dibuat baru jika belum ada
+        $categoryName = trim($validated['category_name'] ?? '');
+        unset($validated['category_name']);
+        $validated['category_id'] = null;
+
+        if ($categoryName !== '') {
+            $category = Category::firstOrCreate([
+                'name' => $categoryName,
+            ]);
+
+            $validated['category_id'] = $category->id;
         }
 
         Product::create($validated);
@@ -92,7 +120,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product->load('supplier');
+        $product->load(['supplier', 'category']);
 
         return view('products.show', compact('product'));
     }
@@ -104,7 +132,7 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         return response()->json(
-            $product->load('supplier')
+            $product->load(['supplier', 'category'])
         );
     }
 
@@ -115,6 +143,7 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'supplier_name' => ['nullable', 'string', 'max:255'],
+            'category_name' => ['nullable', 'string', 'max:255'],
             'sku' => [
                 'required',
                 'string',
@@ -131,7 +160,6 @@ class ProductController extends Controller
 
         $supplierName = trim($validated['supplier_name'] ?? '');
         unset($validated['supplier_name']);
-
         $validated['supplier_id'] = null;
 
         if ($supplierName !== '') {
@@ -142,6 +170,19 @@ class ProductController extends Controller
             $validated['supplier_id'] = $supplier->id;
         }
 
+        // Kategori otomatis terhubung atau dibuat baru jika belum ada
+        $categoryName = trim($validated['category_name'] ?? '');
+        unset($validated['category_name']);
+        $validated['category_id'] = null;
+
+        if ($categoryName !== '') {
+            $category = Category::firstOrCreate([
+                'name' => $categoryName,
+            ]);
+
+            $validated['category_id'] = $category->id;
+        }
+
         $product->update($validated);
 
         return redirect()
@@ -150,7 +191,7 @@ class ProductController extends Controller
     }
 
     /**
-     * Menghapus produk.
+     * Menapus produk.
      */
     public function destroy(Product $product)
     {

@@ -24,12 +24,12 @@ class CoreWorkflowTest extends TestCase
         $admin = User::factory()->create(['role' => 'admin']);
         $responseAdmin = $this->actingAs($admin)->get('/dashboard');
         $responseAdmin->assertStatus(200);
-        $responseAdmin->assertSee('Laporan Keuangan (Admin)');
+        $responseAdmin->assertSee('Kelola Pengguna');
 
         $staff = User::factory()->create(['role' => 'staff']);
         $responseStaff = $this->actingAs($staff)->get('/dashboard');
         $responseStaff->assertStatus(200);
-        $responseStaff->assertDontSee('Laporan Keuangan (Admin)');
+        $responseStaff->assertDontSee('Kelola Pengguna');
     }
 
     public function test_products_page_loads(): void

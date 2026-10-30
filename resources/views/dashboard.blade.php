@@ -479,6 +479,9 @@
             <a href="{{ route('products.index') }}" class="quick-action">
                 📦 Kelola Produk
             </a>
+            <a href="{{ route('categories.index') }}" class="quick-action secondary">
+                🏷️ Kategori
+            </a>
             <a href="{{ route('suppliers.index') }}" class="quick-action secondary">
                 🏢 Data Supplier
             </a>
@@ -491,7 +494,10 @@
 
             @if (auth()->check() && auth()->user()->role === 'admin')
                 <a href="{{ route('financial-reports.index') }}" class="quick-action admin-action">
-                    📈 Laporan Keuangan (Admin)
+                    📈 Laporan Keuangan
+                </a>
+                <a href="{{ route('users.index') }}" class="quick-action admin-action">
+                    👥 Kelola Pengguna
                 </a>
             @endif
         </div>

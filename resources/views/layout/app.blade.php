@@ -771,6 +771,14 @@
         </a>
 
         <a
+            class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}"
+            href="{{ route('categories.index') }}"
+        >
+            <span class="nav-icon">🏷️</span>
+            <span>Kategori</span>
+        </a>
+
+        <a
             class="nav-link {{ request()->routeIs('suppliers.*') ? 'active' : '' }}"
             href="{{ route('suppliers.index') }}"
         >
@@ -796,9 +804,9 @@
             <span>Penjualan</span>
         </a>
 
-        {{-- LAPORAN KEUANGAN: KHUSUS HANYA UNTUK ADMIN --}}
+        {{-- KHUSUS HANYA UNTUK ADMIN --}}
         @if (auth()->check() && auth()->user()->role === 'admin')
-            <div class="nav-label">Laporan & Keuangan</div>
+            <div class="nav-label">Administrasi Sistem</div>
 
             <a
                 class="nav-link {{ request()->routeIs('financial-reports.*') ? 'active' : '' }}"
@@ -806,6 +814,15 @@
             >
                 <span class="nav-icon">📈</span>
                 <span>Laporan Keuangan</span>
+                <span class="nav-admin-tag">Admin</span>
+            </a>
+
+            <a
+                class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}"
+                href="{{ route('users.index') }}"
+            >
+                <span class="nav-icon">👥</span>
+                <span>Kelola Pengguna</span>
                 <span class="nav-admin-tag">Admin</span>
             </a>
         @endif

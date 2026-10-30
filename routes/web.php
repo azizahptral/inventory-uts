@@ -9,6 +9,8 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PurchasePaymentController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\FinancialReportController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\UserController;
 
 // LOGIN
 Route::middleware('guest')->group(function () {
@@ -43,6 +45,14 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/suppliers/{supplier}', [SupplierController::class, 'show'])
             ->name('suppliers.show');
+
+        // KATEGORI (LIHAT: ADMIN & STAFF)
+        Route::get('/categories', [CategoryController::class, 'index'])
+            ->name('categories.index');
+
+        Route::get('/categories/{category}', [CategoryController::class, 'show'])
+            ->name('categories.show')
+            ->whereNumber('category');
 
         // STOK MASUK
         Route::get('/purchases', [PurchaseController::class, 'index'])
@@ -125,6 +135,25 @@ Route::middleware('auth')->group(function () {
             PurchaseController::class,
             'destroy'
         ])->name('purchases.destroy');
+
+        // ADMIN SAJA: TAMBAH, EDIT, DAN HAPUS KATEGORI
+        Route::get('/categories/create', [CategoryController::class, 'create'])
+            ->name('categories.create');
+
+        Route::post('/categories', [CategoryController::class, 'store'])
+            ->name('categories.store');
+
+        Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])
+            ->name('categories.edit');
+
+        Route::put('/categories/{category}', [CategoryController::class, 'update'])
+            ->name('categories.update');
+
+        Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])
+            ->name('categories.destroy');
+
+        // ADMIN SAJA: KELOLA PENGGUNA / USER MANAGEMENT
+        Route::resource('users', UserController::class)->except(['show']);
 
         // ADMIN SAJA: LAPORAN KEUANGAN & CETAK
         Route::get('/financial-reports', [
